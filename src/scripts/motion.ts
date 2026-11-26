@@ -48,7 +48,7 @@ function onScroll() {
   const y = scrollY;
   const max = root.scrollHeight - innerHeight;
   progress.style.setProperty('--p', String(max > 0 ? y / max : 0));
-  navEl.classList.toggle('hide', y > lastY && y > 500);
+  navEl.classList.toggle('stuck', y > innerHeight * 0.6);
   lastY = y;
   if (xp) {
     const r = xp.getBoundingClientRect();

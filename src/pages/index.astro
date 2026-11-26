@@ -322,6 +322,19 @@ const jsonLd = {
       </section>
     </main>
 
+    <div class="bot-layer" aria-hidden="true"></div>
+    <button class="dock" type="button" aria-label="Robot cleaner dock. Press to park or release the robot.">
+      <span class="dock-pad"></span>
+      <span class="dock-info">
+        <span class="dock-text"><b>cleaner</b><i id="bot-status">docked</i></span>
+        <span class="dock-count" title="Bugs cleaned"><span id="bot-count">0</span></span>
+      </span>
+    </button>
+    <div class="bot" aria-hidden="true">
+      <span class="bot-body"><i class="bumper"></i><i class="led"></i><i class="lid"></i></span>
+      <i class="brush l"></i><i class="brush r"></i>
+    </div>
+
     <div class="toast" role="status" aria-live="polite"></div>
 
     <script define:vars={{ rotating: profile.rotating, timezone: profile.timezone }} is:inline>
@@ -329,6 +342,7 @@ const jsonLd = {
     </script>
     <script>
       import '../scripts/motion.ts';
+      import '../scripts/robot.ts';
     </script>
   </body>
 </html>
