@@ -13,11 +13,13 @@ if (bot && dock && layer && dustLayer && !reduce) {
   const statusEl = dock.querySelector<HTMLElement>('#bot-status')!;
   const countEl = dock.querySelector<HTMLElement>('#bot-count')!;
   const pad = dock.querySelector<HTMLElement>('.dock-pad')!;
-  type Mode = 'docked' | 'seek' | 'dust' | 'clean' | 'return' | 'drag' | 'parked';
+  type Mode = 'docked' | 'seek' | 'dust' | 'suck' | 'clean' | 'return' | 'drag' | 'parked';
   type Bug = { x: number; y: number; el: HTMLElement };
   type Dust = { px: number; py: number; el: HTMLElement; done: boolean };
   const UP = -Math.PI / 2;
   const REACH = 24;
+  const DWELL = 0.55; // seconds the robot stays on one speck
+  let heading = UP;
   let mode: Mode = 'docked';
   let x = 0, y = 0, a = UP;
   let bug: Bug | null = null;
@@ -47,7 +49,7 @@ if (bot && dock && layer && dustLayer && !reduce) {
     if (hinted) dock.classList.toggle('open', m !== 'docked');
     if (m === 'seek') say('bug spotted…');
     if (m === 'dust') say('vacuuming…');
-    if (m === 'clean') say('cleaning…');
+    if (m === 'clean' || m === 'suck') say('cleaning…');
     if (m === 'return') say(tripCleaned ? 'clean here ✓' : 'returning…');
     if (m === 'drag') say('hey!');
     if (m === 'parked') say('parked');
@@ -63,6 +65,17 @@ if (bot && dock && layer && dustLayer && !reduce) {
   const showPercent = () => {
     countEl.textContent = dust.length ? Math.round((dustDone / dust.length) * 100) + '%' : '';
   };
+  const finish = (d: Dust) => {
+    if (d.done) return;
+    d.done = true;
+    dustDone++;
+    tripCleaned++;
+    d.el.classList.add('gone');
+    const el = d.el;
+    setTimeout(() => el.remove(), 450);
+    showPercent();
+  };
+  // Used while the robot is dragged: it takes whatever it is moved over.
   const collect = () => {
     for (const d of dust) {
       if (d.done) continue;
@@ -70,15 +83,7 @@ if (bot && dock && layer && dustLayer && !reduce) {
       if (Math.abs(dy) > REACH) continue;
       const dx = d.px - x;
       if (dx * dx + dy * dy > REACH * REACH) continue;
-      d.done = true;
-      dustDone++;
-      tripCleaned++;
-      // Pull the speck into the robot before it disappears.
-      d.el.style.translate = `${(-dx * 0.8).toFixed(1)}px ${(-dy * 0.8).toFixed(1)}px`;
-      d.el.classList.add('gone');
-      const el = d.el;
-      setTimeout(() => el.remove(), 450);
-      showPercent();
+      finish(d);
     }
   };
   const scatter = () => {
@@ -148,7 +153,13 @@ if (bot && dock && layer && dustLayer && !reduce) {
   const step = (t: number) => {
     const dt = Math.min(0.05, (t - last) / 1000 || 0.016);
     last = t;
-    if (mode === 'clean') {
+    if (mode === 'suck') {
+      // Stay on the speck and work on it before moving on.
+      timer -= dt;
+      a = heading + Math.sin((DWELL - timer) * 38) * 0.16;
+      paint();
+      if (timer <= 0) { a = heading; if (speck) finish(speck); next(); }
+    } else if (mode === 'clean') {
       a += dt * 9;
       timer -= dt;
       paint();
@@ -167,21 +178,26 @@ if (bot && dock && layer && dustLayer && !reduce) {
           el.classList.add('gone');
           setTimeout(() => el.remove(), 700);
         } else if (mode === 'return') dockNow();
-        else next();
+        else {
+          heading = a;
+          timer = DWELL;
+          speck!.el.classList.add('sucking');
+          setMode('suck');
+        }
       } else {
         let diff = Math.atan2(dy, dx) - a;
         diff = Math.atan2(Math.sin(diff), Math.cos(diff));
         a += Math.sign(diff) * Math.min(Math.abs(diff), 9 * dt);
         if (Math.abs(diff) < 0.6) {
-          const top = mode === 'dust' ? 175 : 340;
-          const speed = mode === 'return' ? Math.min(top, dist * 5 + 50) : top;
+          const top = mode === 'dust' ? 120 : 340;
+          // Slow down on the last stretch so the stop on a speck looks deliberate.
+          const speed = mode === 'seek' ? top : Math.min(top, dist * 4 + 36);
           const move = Math.min(dist, speed * dt);
           x += Math.cos(a) * move;
           y += Math.sin(a) * move;
           streakT += dt;
           if (streakT > 0.045 && mode !== 'return') { streakT = 0; streak(); }
         }
-        collect();
         paint();
       }
     }

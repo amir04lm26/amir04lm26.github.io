@@ -346,6 +346,8 @@ section { padding: clamp(72px, 11vw, 150px) 0; }
 .speck { position: absolute; width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); border-radius: 45% 55% 60% 40%; background: var(--muted); opacity: var(--o); rotate: var(--r); transition: translate 0.4s var(--ease), scale 0.4s var(--ease), opacity 0.4s; }
 .speck.lint { width: calc(var(--s) * 2.6); height: 1.5px; border-radius: 2px; }
 .speck.gone { scale: 0; opacity: 0; }
+.speck.sucking { animation: suck 0.55s ease-in both; }
+@keyframes suck { 20% { translate: 1.5px -1px; } 40% { translate: -1.5px 1px; } 60% { translate: 1px 1px; scale: 0.8; } 100% { scale: 0.15; opacity: 0.5; } }
 .streak { position: absolute; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent), transparent 68%); animation: streak 1s ease-out forwards; }
 @keyframes streak { to { opacity: 0; scale: 1.5; } }
 .dock.sparkle { animation: sparkle 0.9s var(--ease); }
@@ -376,7 +378,7 @@ section { padding: clamp(72px, 11vw, 150px) 0; }
 .bumper { position: absolute; inset: -1.5px; border-radius: 50%; border: 2.5px solid transparent; border-top-color: var(--accent); }
 .lid { position: absolute; inset: 9px; border-radius: 50%; border: 1px solid var(--line-2); }
 .led { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: led 2.4s ease-in-out infinite; }
-.bot[data-mode='seek'] .led, .bot[data-mode='clean'] .led, .bot[data-mode='sweep'] .led { animation-duration: 0.5s; }
+.bot[data-mode='seek'] .led, .bot[data-mode='suck'] .led, .bot[data-mode='dust'] .led, .bot[data-mode='clean'] .led, .bot[data-mode='sweep'] .led { animation-duration: 0.5s; }
 .bot[data-mode='parked'] .led { animation: none; background: var(--muted); box-shadow: none; }
 @keyframes led { 50% { opacity: 0.35; } }
 .brush { position: absolute; top: -3px; width: 12px; height: 12px; background: linear-gradient(var(--muted), var(--muted)) 50% 50% / 100% 1.5px no-repeat, linear-gradient(var(--muted), var(--muted)) 50% 50% / 1.5px 100% no-repeat; opacity: 0; transition: opacity 0.3s; }
