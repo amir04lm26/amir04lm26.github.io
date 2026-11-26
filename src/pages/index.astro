@@ -22,7 +22,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: profile.name,
-  jobTitle: profile.role,
+  jobTitle: 'Senior Full-Stack Engineer',
   url: Astro.site?.href,
   email: `mailto:${profile.email}`,
   sameAs: [profile.linkedin, profile.github],
@@ -51,6 +51,11 @@ const jsonLd = {
       try {
         if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light';
       } catch {}
+      // Hidden entrance states apply only when scripts run. If the motion script never starts, show everything.
+      document.documentElement.classList.add('js');
+      setTimeout(function () {
+        if (!document.body.classList.contains('ready')) document.documentElement.classList.remove('js');
+      }, 4000);
     </script>
   </head>
   <body>
@@ -134,8 +139,8 @@ const jsonLd = {
             <p class="mono"><b>01</b> / About</p>
             <h2>{words('Product engineer, platform owner, toolmaker.').map((w, i) => <><span class="w"><i style={`--i:${i}`}>{w}</i></span>{' '}</>)}</h2>
           </div>
-          <div class="about">
-            <figure class="portrait" data-in>
+          <div class="about" data-in>
+            <figure class="portrait">
               <Image src={portrait} alt="Portrait of Amir Zare" width={512} quality={90} loading="lazy" />
               <figcaption class="mono">{profile.location}</figcaption>
             </figure>

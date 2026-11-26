@@ -11,19 +11,13 @@ export type Repo = {
 
 // Descriptions for repos that have none on GitHub.
 const notes: Record<string, string> = {
-  'go-micro-example': 'Go microservices: broker, auth, logger, mail and listener services.',
+  'flight-search-app': 'Flight search in Next.js with server components, Drizzle and PostgreSQL, Redis, NextAuth, Jest and Cypress.',
+  'go-micro-example': 'Go microservices: broker, authentication, logger, mail and listener services.',
   'go-training': 'More than 130 small Go programs, from basics to concurrency patterns.',
   'python-training': 'Python from first principles to asyncio, threads and locks.',
-  'algorigthm-data-structure': 'Algorithms and data structures, written in Go.',
-  'flight-search-app': 'A flight search UI in TypeScript.',
-  'STM8': 'Firmware drivers for the STM8S105K4 microcontroller.',
-  'tiktok-desktop': 'A desktop client for TikTok.',
-  'html-components-drag-and-drop': 'Drag and drop with plain HTML components and TypeScript.',
-  'go-custom-pkg': 'A minimal custom Go package.',
-  'TCPVoiceController': 'Voice control over TCP, from my embedded years.',
 };
 
-const hidden = new Set(['uniclient', 'stations-graphql', 'Turbo-Next-Boilerplate', 'amir04lm26.github.io']);
+const hidden = new Set(['uniclient', 'stations-graphql', 'Turbo-Next-Boilerplate', 'go-custom-pkg', 'TCPVoiceController', 'amir04lm26.github.io']);
 
 export async function getRepos(user: string): Promise<Repo[]> {
   let raw: any[] = fallback as any[];

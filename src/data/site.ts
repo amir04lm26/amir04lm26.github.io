@@ -77,7 +77,8 @@ export const experience: Job[] = [
       'Rebuilt the SSR architecture: 25% faster rendering and 32× the sustained request capacity, validated with Locust at 20K requests per second.',
       'Improved frontend performance by 53% on critical pages through bundle, image and render-path work.',
       'Moved the build from Babel to esbuild, which made local and CI builds more than 2× faster.',
-      'Integrated the shop into partner super-apps (Snapp, Irancell).',
+      'Wrote the Locust load-test suite for search, sign-in, cart, payment and delivery flows, and the Nginx gateway rules in front of the storefront.',
+      'Integrated the shop into partner super-apps (Snapp, Irancell) and shipped a single-sign-on prize-wheel campaign.',
     ],
     stack: ['Next.js', 'React', 'TypeScript', 'Node.js', 'Nginx', 'Kubernetes', 'Locust', 'Sentry'],
   },
@@ -142,7 +143,7 @@ export const work: Work[] = [
   {
     tag: 'Scale',
     title: 'SSR that holds 20K requests per second',
-    body: 'A rebuild of the server-rendering layer of a marketplace, with tuned Kubernetes and Nginx in front of it. Locust load tests set the target and proved the result.',
+    body: 'A rebuild of the server-rendering layer of a marketplace, with tuned Kubernetes and Nginx in front of it. Locust scenarios for search, cart, payment and delivery set the target and proved the result.',
     metric: '32×',
     metricLabel: 'sustained request capacity',
     chips: ['Next.js', 'Node.js', 'Nginx', 'Kubernetes', 'Locust'],
@@ -178,11 +179,11 @@ export const work: Work[] = [
   {
     tag: 'Security',
     title: 'Hardening as routine work',
-    body: 'Access-control and rate-limit fixes across account and contact endpoints, patched base images, and a weekly agent run that triages dependency findings, checks real reachability and prepares the tickets.',
+    body: 'Security treated as part of delivery: regular hardening of the platform, patched base images, and a weekly agent run that triages dependency findings, checks whether each one is reachable and prepares the tickets.',
     chips: ['Django', 'Datadog SCA', 'Docker', 'Claude Code'],
   },
   {
-    tag: 'Side project',
+    tag: 'Experiment',
     title: 'A voice assistant for macOS',
     body: 'A Siri-like assistant on top of Claude Code: a hotkey opens an orb, speech goes in, work gets done, a short answer comes back. It has spoken approvals, a countdown before anything is sent, and local memory.',
     chips: ['Swift', 'Bun', 'TypeScript', 'Claude Code'],
