@@ -342,6 +342,14 @@ section { padding: clamp(72px, 11vw, 150px) 0; }
 
 /* Robot cleaner */
 .bot-layer { position: fixed; inset: 0; z-index: 68; pointer-events: none; }
+.dust-layer { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: 2; pointer-events: none; }
+.speck { position: absolute; width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); border-radius: 45% 55% 60% 40%; background: var(--muted); opacity: var(--o); rotate: var(--r); transition: translate 0.4s var(--ease), scale 0.4s var(--ease), opacity 0.4s; }
+.speck.lint { width: calc(var(--s) * 2.6); height: 1.5px; border-radius: 2px; }
+.speck.gone { scale: 0; opacity: 0; }
+.streak { position: absolute; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent), transparent 68%); animation: streak 1s ease-out forwards; }
+@keyframes streak { to { opacity: 0; scale: 1.5; } }
+.dock.sparkle { animation: sparkle 0.9s var(--ease); }
+@keyframes sparkle { 30% { box-shadow: 0 0 0 6px var(--accent-soft), 0 0 26px var(--accent); border-color: var(--accent); } }
 .bug { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; rotate: var(--r); animation: bug-in 0.45s var(--ease-spring) both; transition: scale 0.6s var(--ease), opacity 0.6s; }
 .bug::before { content: ''; position: absolute; inset: 2px 3px; border-radius: 50%; background: var(--text); }
 .bug::after { content: ''; position: absolute; inset: 0; background: linear-gradient(var(--muted), var(--muted)) 0 3px / 100% 1px no-repeat, linear-gradient(var(--muted), var(--muted)) 0 6px / 100% 1px no-repeat, linear-gradient(var(--muted), var(--muted)) 0 9px / 100% 1px no-repeat; z-index: -1; }
@@ -356,7 +364,7 @@ section { padding: clamp(72px, 11vw, 150px) 0; }
 .dock-text { display: grid; font-family: var(--mono); font-size: 0.68rem; line-height: 1.35; }
 .dock-text b { font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .dock-text i { font-style: normal; color: var(--accent); min-width: 15ch; }
-.dock-count { font-family: var(--display); font-size: 1.15rem; font-weight: 600; min-width: 1.4em; text-align: right; }
+.dock-count { font-family: var(--display); font-size: 1.05rem; font-weight: 600; min-width: 2.6em; text-align: right; font-variant-numeric: tabular-nums; }
 #bot-count { display: inline-block; }
 #bot-count.bump { animation: bump 0.5s var(--ease-spring); }
 @keyframes bump { 40% { transform: scale(1.6); color: var(--accent); } }
@@ -396,5 +404,5 @@ section { padding: clamp(72px, 11vw, 150px) 0; }
   .js .about .portrait { clip-path: inset(0 round 22px) !important; }
   .marquee-track { flex-wrap: wrap; width: auto; justify-content: center; padding-inline: var(--gutter); }
   .marquee-track > [aria-hidden] { display: none; }
-  #field, .glow, .scroll-hint, .bot, .dock, .bot-layer { display: none !important; }
+  #field, .glow, .scroll-hint, .bot, .dock, .bot-layer, .dust-layer { display: none !important; }
 }
