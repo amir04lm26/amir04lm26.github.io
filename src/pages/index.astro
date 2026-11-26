@@ -1,0 +1,302 @@
+---
+import { Image } from 'astro:assets';
+import '../styles/global.css';
+import portrait from '../assets/amir.png';
+import { profile, stats, about, strengths, pipeline, experience, work, skills, marquee } from '../data/site';
+import { getRepos } from '../data/github';
+
+const repos = await getRepos(profile.githubUser);
+const langColor: Record<string, string> = { TypeScript: '#3178c6', JavaScript: '#f1e05a', Go: '#00add8', Python: '#3572a5', C: '#8a8f98' };
+const words = (s: string) => s.split(' ');
+const title = `${profile.name} — ${profile.role}`;
+const description = 'Staff-level full-stack engineer: React, Next.js, TypeScript, Python and Django. Frontend architecture, design systems, delivery speed and agent tooling.';
+const nav = [
+  ['about', 'About'],
+  ['experience', 'Experience'],
+  ['work', 'Work'],
+  ['code', 'Code'],
+  ['skills', 'Skills'],
+  ['contact', 'Contact'],
+];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.role,
+  url: Astro.site?.href,
+  email: `mailto:${profile.email}`,
+  sameAs: [profile.linkedin, profile.github],
+  worksFor: { '@type': 'Organization', name: 'OVOU' },
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#08090a" />
+    <link rel="canonical" href={Astro.site?.href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={Astro.site?.href} />
+    <meta property="og:image" content={new URL('/og.png', Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>
+      try {
+        if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light';
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <div class="progress" aria-hidden="true"></div>
+    <div class="glow" aria-hidden="true"></div>
+
+    <header class="nav">
+      <nav class="nav-in" aria-label="Sections">
+        <a class="nav-logo" href="#top" aria-label="Back to top">AZ</a>
+        <div class="nav-links">
+          <span class="nav-pill" aria-hidden="true"></span>
+          {nav.map(([id, label]) => <a href={`#${id}`} data-nav={id}>{label}</a>)}
+        </div>
+        <button class="theme" type="button" aria-label="Switch colour theme">
+          <svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+          <svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
+        </button>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <canvas id="field" aria-hidden="true"></canvas>
+        <div class="wrap">
+          <div class="status fade" style="--d: 0.1s">
+            <span class="dot"></span>
+            <span class="mono">Open to staff and senior roles</span>
+          </div>
+          <h1 aria-label={profile.name}>
+            {
+              profile.name.split(' ').map((part, l) => (
+                <span class="line" aria-hidden="true">
+                  {[...part].map((c, i) => <span class={`ch ${l === 1 ? 'accent' : ''}`} style={`--i:${i + l * 4}`}>{c}</span>)}
+                </span>
+              ))
+            }
+          </h1>
+          <div class="hero-grid">
+            <div class="fade" style="--d: 0.75s">
+              <p class="lede">{profile.tagline}</p>
+              <span class="rot" aria-hidden="true">&gt; <b id="rot">{profile.rotating[0]}</b><span class="caret"></span></span>
+              <span class="sr">{profile.role}. Focus: {profile.rotating.join(', ')}.</span>
+            </div>
+            <div class="hero-side fade" style="--d: 0.9s">
+              <p class="mono">{profile.role}<br />{profile.location} · <span id="clock">--:--</span> local</p>
+              <div class="cta">
+                <a class="btn primary" href="#contact" data-magnet>Get in touch <span class="arr">↗</span></a>
+                <a class="btn" href={profile.resume} download data-magnet>Résumé <span class="arr down">↓</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="scroll-hint" aria-hidden="true"></span>
+      </section>
+
+      <div class="marquee" aria-label="Main technologies">
+        <div class="marquee-track">
+          {marquee.map((m) => <span>{m}</span>)}
+          {marquee.map((m) => <span aria-hidden="true">{m}</span>)}
+        </div>
+      </div>
+
+      <section id="numbers" style="padding-bottom: 0">
+        <div class="wrap">
+          <div class="stats">
+            {
+              stats.map((s, i) => (
+                <div class="stat rv" style={`--i:${i}`}>
+                  <b><span data-count={s.value}>{s.value}</span><em>{s.suffix}</em></b>
+                  <span>{s.label}</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section id="about">
+        <div class="wrap">
+          <div class="head" data-in>
+            <p class="mono"><b>01</b> / About</p>
+            <h2>{words('Product engineer, platform owner, toolmaker.').map((w, i) => <><span class="w"><i style={`--i:${i}`}>{w}</i></span>{' '}</>)}</h2>
+          </div>
+          <div class="about">
+            <figure class="portrait" data-in>
+              <Image src={portrait} alt="Portrait of Amir Zare" width={512} quality={90} loading="lazy" />
+              <figcaption class="mono">{profile.location}</figcaption>
+            </figure>
+            <div class="about-text">
+              {about.map((p, i) => <p class="rv" style={`--i:${i}`}>{p}</p>)}
+              <ul class="strengths">
+                {strengths.map((s, i) => <li class="rv" style={`--i:${i}`}>{s}</li>)}
+              </ul>
+              <div class="pipe rv" id="pipe" aria-label="How a ticket moves through my agent workflow">
+                <div class="pipe-bar"><i></i><i></i><i></i><span class="mono">agent run · human approves each hand-off</span></div>
+                <div class="pipe-steps">
+                  {pipeline.map((s) => <span class="step">{s}</span>)}
+                </div>
+                <p class="pipe-log" aria-hidden="true">&nbsp;</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="experience">
+        <div class="wrap">
+          <div class="head" data-in>
+            <p class="mono"><b>02</b> / Experience</p>
+            <h2>{words('Eight years, five teams.').map((w, i) => <><span class="w"><i style={`--i:${i}`}>{w}</i></span>{' '}</>)}</h2>
+          </div>
+          <div class="xp">
+            <div class="xp-line" aria-hidden="true"><i></i></div>
+            {
+              experience.map((j) => (
+                <article class="job">
+                  <div class="rv">
+                    <h3>{j.company}</h3>
+                    <div class="meta mono">
+                      <span class="accent">{j.period}</span>
+                      <span>{j.place}</span>
+                    </div>
+                  </div>
+                  <div class="rv" style="--i:1">
+                    <p class="role">{j.title}</p>
+                    <p class="sum">{j.summary}</p>
+                    <ul>{j.points.map((p) => <li>{p}</li>)}</ul>
+                    <div class="chips">{j.stack.map((s) => <span class="chip">{s}</span>)}</div>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section id="work">
+        <div class="wrap">
+          <div class="head" data-in>
+            <p class="mono"><b>03</b> / Selected work</p>
+            <h2>{words('Things I built and what they changed.').map((w, i) => <><span class="w"><i style={`--i:${i}`}>{w}</i></span>{' '}</>)}</h2>
+          </div>
+          <div class="cards">
+            {
+              work.map((w, i) => (
+                <article class="card rv" style={`--i:${i % 3}`} data-tilt>
+                  <div class="card-top">
+                    <span class="tag">{w.tag}</span>
+                    <span class="n">{String(i + 1).padStart(2, '0')}</span>
+                  </div>
+                  <h3>{w.title}</h3>
+                  <p>{w.body}</p>
+                  {w.metric && <div class="metric"><b>{w.metric}</b><span>{w.metricLabel}</span></div>}
+                  <div class="chips">{w.chips.map((c) => <span class="chip">{c}</span>)}</div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section id="code">
+        <div class="wrap">
+          <div class="head" data-in>
+            <p class="mono"><b>04</b> / Public code</p>
+            <h2>{words('Learning in the open.').map((w, i) => <><span class="w"><i style={`--i:${i}`}>{w}</i></span>{' '}</>)}</h2>
+          </div>
+          <div class="repos">
+            {
+              repos.map((r, i) => (
+                <a class="repo rv" style={`--i:${i % 3}`} href={r.url} target="_blank" rel="noopener">
+                  <h3><span>{r.name}</span><span class="arr">↗</span></h3>
+                  <p>{r.description ?? 'No description yet.'}</p>
+                  <footer>
+                    {r.language && <span class="lang" style={`--c:${langColor[r.language] ?? 'var(--muted)'}`}>{r.language}</span>}
+                    {r.stars > 0 && <span>★ {r.stars}</span>}
+                    <span>{new Date(r.pushed).getFullYear()}</span>
+                  </footer>
+                </a>
+              ))
+            }
+          </div>
+          <div class="repos-foot rv">
+            <p class="mono">Most of my work lives in private company repositories. These are the public ones.</p>
+            <a class="btn" href={profile.github} target="_blank" rel="noopener" data-magnet>All repositories <span class="arr">↗</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills">
+        <div class="wrap">
+          <div class="head" data-in>
+            <p class="mono"><b>05</b> / Toolbox</p>
+            <h2>{words('What I reach for.').map((w, i) => <><span class="w"><i style={`--i:${i}`}>{w}</i></span>{' '}</>)}</h2>
+          </div>
+          <div class="skills">
+            {
+              skills.map((s, i) => (
+                <div class="skill-row rv" style={`--i:${i}`}>
+                  <h3>{s.group}</h3>
+                  <div class="chips">{s.items.map((x) => <span class="chip">{x}</span>)}</div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="contact">
+        <div class="wrap">
+          <p class="mono" style="margin-bottom: 18px"><b class="accent">06</b> / Contact</p>
+          <h2 class="big" data-in>Let’s build <span class="hl">something fast.</span></h2>
+          <div class="links">
+            <button class="link" type="button" data-copy={profile.email}>
+              <span><span class="mono">Email · click to copy</span><span class="v">{profile.email}</span></span>
+              <span class="arr" aria-hidden="true">⧉</span>
+            </button>
+            <a class="link" href={`tel:${profile.phoneHref}`}>
+              <span><span class="mono">Phone</span><span class="v">{profile.phone}</span></span>
+              <span class="arr" aria-hidden="true">↗</span>
+            </a>
+            <a class="link" href={profile.linkedin} target="_blank" rel="noopener me">
+              <span><span class="mono">LinkedIn</span><span class="v">in/amir04lm26</span></span>
+              <span class="arr" aria-hidden="true">↗</span>
+            </a>
+            <a class="link" href={profile.github} target="_blank" rel="noopener me">
+              <span><span class="mono">GitHub</span><span class="v">amir04lm26</span></span>
+              <span class="arr" aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <footer class="foot mono">
+            <span>© {new Date().getFullYear()} {profile.name}</span>
+            <span>{profile.locationNote}</span>
+            <a href={profile.resume} download>Download résumé ↓</a>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" role="status" aria-live="polite"></div>
+
+    <script define:vars={{ rotating: profile.rotating, timezone: profile.timezone }} is:inline>
+      window.__site = { rotating, timezone };
+    </script>
+    <script>
+      import '../scripts/motion.ts';
+    </script>
+  </body>
+</html>
