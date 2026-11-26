@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import '../styles/global.css';
 import portrait from '../assets/amir.png';
-import { profile, stats, about, strengths, pipeline, experience, work, skills, marquee } from '../data/site';
+import { profile, stats, about, strengths, pipeline, experience, work, skills, marquee, recommendations } from '../data/site';
 import { getRepos } from '../data/github';
 
 const repos = await getRepos(profile.githubUser);
@@ -87,7 +87,7 @@ const jsonLd = {
           <h1 aria-label={profile.name}>
             {
               profile.name.split(' ').map((part, l) => (
-                <span class="line" aria-hidden="true">
+                <span class={`line ${l === 1 ? 'hl-line' : ''}`} aria-hidden="true">
                   {[...part].map((c, i) => <span class={`ch ${l === 1 ? 'accent' : ''}`} style={`--i:${i + l * 4}`}>{c}</span>)}
                 </span>
               ))
@@ -264,9 +264,36 @@ const jsonLd = {
         </div>
       </section>
 
+      <section id="voices">
+        <div class="wrap">
+          <div class="head" data-in>
+            <p class="mono"><b>06</b> / Recommendations</p>
+            <h2>{words('What colleagues say.').map((w, i) => <><span class="w"><i style={`--i:${i}`}>{w}</i></span>{' '}</>)}</h2>
+          </div>
+          <div class="quotes">
+            {
+              recommendations.map((r, i) => (
+                <figure class="quote rv" style={`--i:${i}`}>
+                  <span class="qm" aria-hidden="true">“</span>
+                  <blockquote>{r.quote}</blockquote>
+                  <figcaption>
+                    <b>{r.name}</b>
+                    <span class="mono">{r.title} · {r.relation}</span>
+                  </figcaption>
+                </figure>
+              ))
+            }
+          </div>
+          <div class="repos-foot rv">
+            <p class="mono">Excerpts from recommendations on LinkedIn.</p>
+            <a class="btn" href={`${profile.linkedin}/details/recommendations/`} target="_blank" rel="noopener" data-magnet>Read them in full <span class="arr">↗</span></a>
+          </div>
+        </div>
+      </section>
+
       <section id="contact" class="contact">
         <div class="wrap">
-          <p class="mono" style="margin-bottom: 18px"><b class="accent">06</b> / Contact</p>
+          <p class="mono" style="margin-bottom: 18px"><b class="accent">07</b> / Contact</p>
           <h2 class="big" data-in>Let’s build <span class="hl">something fast.</span></h2>
           <div class="links">
             <button class="link" type="button" data-copy={profile.email}>

@@ -74,13 +74,14 @@ export const experience: Job[] = [
     summary: 'Led the frontend chapter of a high-traffic e-commerce marketplace.',
     points: [
       'Led and mentored 8 engineers through architecture redesigns, hiring and a code-review culture.',
-      'Rebuilt the SSR architecture: 25% faster rendering and 32× the sustained request capacity, validated with Locust at 20K requests per second.',
-      'Improved frontend performance by 53% on critical pages through bundle, image and render-path work.',
-      'Moved the build from Babel to esbuild, which made local and CI builds more than 2× faster.',
-      'Wrote the Locust load-test suite for search, sign-in, cart, payment and delivery flows, and the Nginx gateway rules in front of the storefront.',
+      'Redesigned how the storefront is served: a static app from the CDN for people and server-rendered pages for crawlers, split at the gateway. Result: 25% faster rendering and 32× the sustained request capacity.',
+      'Owned the frontend infrastructure end to end: GitLab CI pipelines, Docker images, Helm releases on Kubernetes, and Nginx with Brotli, caching, keep-alive tuning and rate limits.',
+      'Proved the platform at 20K requests per second with a Locust suite for search, sign-in, cart, payment and delivery flows.',
+      'Started the shared design system and the shared tools library that every storefront app installs: about 290 and 95 releases between 2022 and 2025.',
+      'Improved frontend performance by 53% on critical pages, and moved the build from Babel to esbuild for builds more than 2× faster.',
       'Integrated the shop into partner super-apps (Snapp, Irancell) and shipped a single-sign-on prize-wheel campaign.',
     ],
-    stack: ['Next.js', 'React', 'TypeScript', 'Node.js', 'Nginx', 'Kubernetes', 'Locust', 'Sentry'],
+    stack: ['Next.js', 'React', 'TypeScript', 'Node.js', 'Nginx', 'Kubernetes', 'Helm', 'GitLab CI', 'Locust', 'Sentry'],
   },
   {
     company: 'FANAP',
@@ -142,11 +143,11 @@ export const work: Work[] = [
   },
   {
     tag: 'Scale',
-    title: 'SSR that holds 20K requests per second',
-    body: 'A rebuild of the server-rendering layer of a marketplace, with tuned Kubernetes and Nginx in front of it. Locust scenarios for search, cart, payment and delivery set the target and proved the result.',
+    title: 'A storefront that holds 20K requests per second',
+    body: 'People get a static app from the CDN. Crawlers get server-rendered pages. The gateway splits the two by user agent, with Brotli, caching, keep-alive tuning and rate limits in front. Locust scenarios for search, cart, payment and delivery set the target and proved the result.',
     metric: '32×',
     metricLabel: 'sustained request capacity',
-    chips: ['Next.js', 'Node.js', 'Nginx', 'Kubernetes', 'Locust'],
+    chips: ['Next.js', 'Nginx', 'Kubernetes', 'Helm', 'Locust'],
   },
   {
     tag: 'Product',
@@ -188,6 +189,14 @@ export const work: Work[] = [
     body: 'A Siri-like assistant on top of Claude Code: a hotkey opens an orb, speech goes in, work gets done, a short answer comes back. It has spoken approvals, a countdown before anything is sent, and local memory.',
     chips: ['Swift', 'Bun', 'TypeScript', 'Claude Code'],
   },
+  {
+    tag: 'Shared platform',
+    title: 'One component library for every storefront app',
+    body: 'A design system and a tools library published as versioned packages: inputs, date pickers, maps, carousels and an icon set on one side, and hooks, validation and date utilities on the other. Each app installs them, so a fix ships once.',
+    metric: '290',
+    metricLabel: 'design-system releases in under three years',
+    chips: ['React', 'TypeScript', 'Storybook', 'semantic-release'],
+  },
 ];
 
 export const skills: { group: string; items: string[] }[] = [
@@ -200,3 +209,24 @@ export const skills: { group: string; items: string[] }[] = [
 ];
 
 export const marquee = ['React', 'Next.js', 'TypeScript', 'Python', 'Django', 'PostgreSQL', 'Kubernetes', 'Datadog', 'Storybook', 'Claude Code', 'MCP', 'Go', 'Redis', 'Celery', 'React Native'];
+
+export const recommendations = [
+  {
+    quote: 'Amir seamlessly blended his technical expertise with strong management skills, taking on the role of chapter lead within our team for over two years.',
+    name: 'Aboozar Ghaffari',
+    title: 'CTO at SnappShop',
+    relation: 'Managed Amir directly',
+  },
+  {
+    quote: 'Amir is a problem solver first and foremost and no topic is too complex for him.',
+    name: 'Mohammad Saad Shahzad',
+    title: 'VP of Product',
+    relation: 'Worked with Amir on the same team',
+  },
+  {
+    quote: 'As the Front-end Chapter lead, Amir has demonstrated excellent leadership skills and has consistently motivated his team to deliver their best work.',
+    name: 'AmirMahdi Digbari',
+    title: 'Software Engineer',
+    relation: 'Worked with Amir on the same team',
+  },
+];
